@@ -10,8 +10,6 @@ How to use the OpenWeather API
 
 Manipulating JSON data - returned by the OpenWeather API
 
-
-
 # Version 2.0 stuff?
 
 GUI...
@@ -34,8 +32,6 @@ Gradle
 
 Test Driven Development
 
-
-
 notes from Mistress
 
 * Refactoring the app into seperate, testable classes
@@ -44,5 +40,4 @@ notes from Mistress
 * display better error results - if the API gives an error message, print that to the console
 * Change your app to return results from multiple cities at once
 * Change your app to call multiple weather APIs and give the average of the results
-
-
+* Update github stuff (done)
