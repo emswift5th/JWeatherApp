@@ -15,6 +15,11 @@ class OpenWeatherAPITest {
 
     private static String testJSONData;
     private static HashMap<String, String> testHashMap;
+
+    //todo: redo all these tests...
+    // oh dear
+
+
     @BeforeAll
     public static void loadTestJSONData() throws IOException {
         String filePath = "test/parseJSONAPI/OWTestInput.json";
