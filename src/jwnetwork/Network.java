@@ -1,4 +1,4 @@
-package network;
+package jwnetwork;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,6 +8,7 @@ import java.net.http.HttpResponse;
 
 public class Network {
     public String httpRequest (String URL) throws IOException, InterruptedException {
+        //Do better error handling here
         HttpClient client = HttpClient.newHttpClient(); //what does autocloseable mean?
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(URL)).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

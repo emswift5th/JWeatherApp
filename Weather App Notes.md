@@ -20,7 +20,7 @@ Remove API key from source & URL if possible
 
 Classes should do one and only one thing, try breaking down Main. Breaking up WeatherApp.java
 
-Split off JSON/Jackson & network into directory - package
+Split off JSON/Jackson & jwnetwork into directory - package
 
 Jackson via DTO
 
@@ -40,4 +40,4 @@ notes from Mistress
 * display better error results - if the API gives an error message, print that to the console
 * Change your app to return results from multiple cities at once
 * Change your app to call multiple weather APIs and give the average of the results
-* Update github stuff (done)
+* 
