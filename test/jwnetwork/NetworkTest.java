@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class NetworkTest {
     @Test
     void testNoURL(){
+        //no URL means no string at the moment
         Network testNet = new Network();
         String noString = "";
         assertThrows(java.lang.IllegalArgumentException.class, ()->{testNet.httpRequest(noString);});
