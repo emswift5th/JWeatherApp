@@ -1,15 +1,25 @@
-package parseJSONAPI;
+package parsejsonapi;
 
 import org.json.*;
-import unitConversions.Convert;
+import unitconversions.Convert;
 import jwnetwork.Network;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.util.HashMap;
 
 public class OpenWeatherAPI {
 
-    private String API_KEY = null;
+    private String API_KEY;
+    private final Network httpRequest;
+
+    public OpenWeatherAPI() {
+        this.httpRequest = new Network();
+    }
+
+    public OpenWeatherAPI(Network httpRequest) {
+        this.httpRequest = httpRequest;
+    }
 
     public String getAPI_KEY() {
         return API_KEY;
@@ -49,10 +59,8 @@ public class OpenWeatherAPI {
         String weatherJSON;
         //Connect to the API and pull data
         try {
-            Network httpOpenWeatherRequest = new Network();
-            weatherJSON = httpOpenWeatherRequest.httpRequest("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + API_KEY);
+            weatherJSON = httpRequest.httpRequest("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + API_KEY).getValue0();
         } catch (IOException | InterruptedException e) {
-            System.out.println("HTTP Request error!");
             throw new RuntimeException(e);
         }
         return weatherJSON;

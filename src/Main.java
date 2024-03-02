@@ -1,5 +1,5 @@
-import consoleDisplay.consoleInterface;
-import parseJSONAPI.OpenWeatherAPI;
+import consoledisplay.ConsoleInterface;
+import parsejsonapi.OpenWeatherAPI;
 
 import java.util.HashMap;
 
@@ -10,9 +10,9 @@ public class Main {
     public static void main(String[] args) {
         //Should not be in source code.
         //It's a free API so we can get away with it for now, but this really needs to be addressed.
-        String API_KEY = "5e877cbb690f0b1e11d404f1be1720cd";
+        String API_KEY = System.getenv("OPEN_WEATHER_API_KEY");
 
-        consoleInterface console = new consoleInterface();
+        ConsoleInterface console = new ConsoleInterface();
         String city;
 
         //Process console params if they're there, else we ask the user

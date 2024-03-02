@@ -1,9 +1,9 @@
-package consoleDisplay;
+package consoledisplay;
 
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class consoleInterface {
+public class ConsoleInterface {
     public void printOutWeatherHashMap(HashMap<String, String> weatherData) {
         System.out.println(weatherData.get("description"));
         System.out.println(weatherData.get("temperature") + " Celsius");
@@ -20,5 +20,3 @@ public class consoleInterface {
         System.out.println(line);
     }
 }
-
-

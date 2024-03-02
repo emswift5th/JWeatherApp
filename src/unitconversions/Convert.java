@@ -1,4 +1,4 @@
-package unitConversions;
+package unitconversions;
 
 public class Convert {
     public float kelvinToCelsius(float kelvin) {

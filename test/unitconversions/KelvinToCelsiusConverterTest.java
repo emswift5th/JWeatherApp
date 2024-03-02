@@ -1,7 +1,6 @@
-package unitConversions;
+package unitconversions;
 
 import org.junit.jupiter.api.*;
-import unitConversions.Convert;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
