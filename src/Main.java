@@ -1,7 +1,10 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
 import consoledisplay.ConsoleInterface;
 import parsejsonapi.OpenWeatherAPI;
 
 import java.util.HashMap;
+
+import types.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -29,7 +32,12 @@ public class Main {
 
         //Set up API key and get the weather data hashmap
         owAPI.setAPI_KEY(API_KEY);
-        HashMap<String, String> WeatherData = owAPI.getWeatherAtCity(city);
+        CityWeather WeatherData = null;
+        try {
+            WeatherData = owAPI.getWeatherAtCity(city);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         //GUI stuff... for the future
         //POSTMAN, a way of calling APIs????
@@ -37,7 +45,7 @@ public class Main {
 
         //Print the weather at the specified location
 
-        console.printOutWeatherHashMap(WeatherData);
+        //console.printOutWeatherHashMap(WeatherData);
 
     }
 }

@@ -1,11 +1,14 @@
 package parsejsonapi;
 
-import org.json.*;
+//import org.json.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import types.CityWeather;
+import types.Geo;
+import types.Weather;
 import unitconversions.Convert;
 import jwnetwork.Network;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.util.HashMap;
 
 public class OpenWeatherAPI {
@@ -29,29 +32,46 @@ public class OpenWeatherAPI {
         this.API_KEY = API_KEY;
     }
 
-    public HashMap<String, String> parseJSON(String JSONinput) {
-        //Making hashmap to store weather data
-        HashMap<String, String> weatherDataHashmap = new HashMap<String, String>();
+    public CityWeather parseJSON(String JSONinput) throws JsonProcessingException {
         //Parsing JSON
-        JSONObject obj = new JSONObject(JSONinput);
-        JSONObject weatherDataDescription = new JSONObject(obj.getJSONArray("weather").get(0).toString());
-        JSONObject mainData = new JSONObject(obj.getJSONObject("main").toString());
+        OW_API_JSON_Record APIData;
+        //Creating and filling out a local weather record to store data from the API
+        //Standardises weather data between APIs
+        types.CityWeather cityWeather;
+        types.Geo geo;
+        types.Weather weather;
+        ObjectMapper objectMapper = new ObjectMapper();
 
+        APIData = objectMapper.readValue(JSONinput, OW_API_JSON_Record.class);
+        geo = new Geo(
+                APIData.name(),
+                APIData.sys().country(),
+                APIData.coord().lon(),
+                APIData.coord().lat(),
+                APIData.timezone(),
+                APIData.sys().sunrise(),
+                APIData.sys().sunset()
+        );
+        weather = new Weather(
+                APIData.weather()[0].description(),
+                APIData.main().temp(),
+                APIData.main().feels_like(),
+                APIData.main().pressure(),
+                APIData.main().humidity(),
+                APIData.visibility(),
+                APIData.wind().speed(),
+                APIData.wind().gust(),
+                APIData.wind().speed(),
+                APIData.clouds().all(),
+                APIData.rain().one_hour_mm(),
+                APIData.snow().one_hour_mm()
+        );
+        cityWeather = new CityWeather(geo, weather);
         //Jackson, via DTO?
 
         //Putting data into hashmap
         //Shift-F6 to rename a variable
-        float tempCelsius;
-        Convert converter = new Convert();
-
-        tempCelsius = converter.kelvinToCelsius(mainData.getFloat("temp"));
-        tempCelsius = converter.trimFloatTwoDecimals(tempCelsius);
-
-        weatherDataHashmap.put("description", weatherDataDescription.getString("description"));
-        weatherDataHashmap.put("temperature", Float.toString(tempCelsius));
-        weatherDataHashmap.put("pressure", Float.toString(mainData.getFloat("pressure")));
-
-        return weatherDataHashmap;
+        return cityWeather;
     }
 
 
@@ -66,7 +86,7 @@ public class OpenWeatherAPI {
         return weatherJSON;
     }
 
-    public HashMap<String, String> getWeatherAtCity(String city){
+    public CityWeather getWeatherAtCity(String city) throws JsonProcessingException {
         //Take a city name string, return a hashmap of the weather data at this city.
 
         if (API_KEY == null) {

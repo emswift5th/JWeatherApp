@@ -1,5 +1,6 @@
 package parsejsonapi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jwnetwork.Network;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,23 +17,29 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import types.*;
+import types.Weather;
+
 class OpenWeatherAPITest {
     /* Test the following methods:
         openWeatherAPI.parseJSON()
         openWeatherAPI.getWeatherAtCity()
      */
 
+    //testData is read in from CSV
     private static HashMap<String, String> testData;
+    //used to create good data to test against
+    private static CityWeather refWeather;
     private static String API_KEY;
 
 
-    private static HashMap<String, String> parseJSONTester(String s){
+    private static CityWeather parseJSONTester(String s) throws JsonProcessingException {
         OpenWeatherAPI parserTest = new OpenWeatherAPI();
         return parserTest.parseJSON(testData.get(s));
     }
 
     @BeforeAll
-    public static void loadTestDataStrings() throws IOException{
+    public static void initTestData() throws IOException{
         API_KEY = System.getenv("OPEN_WEATHER_API_KEY");
         String filePath = "test/parsejsonapi/OWTestInput.csv";
         List<String> testDataLinesIn = Files.readAllLines(Paths.get(filePath));
@@ -41,42 +48,63 @@ class OpenWeatherAPITest {
             String[] data = s.split(",", 2);
             testData.put(data[0], data[1]);
         }
+
+        //create a reference CityWeather object
+        CityWeather refWeather;
+        Geo geo;
+        Weather weather;
+
+        geo = new Geo(
+                "Manchester",
+                "GB",
+                -2.2374,
+                53.4809,
+                0,
+                1708672323,
+                1708709586
+        );
+        weather = new Weather(
+                "broken clouds",
+                (float)273.15,
+                (float)277.61,
+                983,
+                79,
+                10000,
+                (float)4.12,
+                0,
+                210,
+                75,
+                0,
+                0
+        );
+        refWeather = new CityWeather(geo, weather);
+
     }
 
     //parseJSON - Give it correct data, and verify
     @Test
-    void parseJSON_GoodData(){
+    void parseJSON_GoodData() throws JsonProcessingException {
         //build reference hashmap and assert against the parser output
-        HashMap<String, String> testHashMap = parseJSONTester("GOOD_DATA");
-        HashMap<String, String> refHashMap = new HashMap<>();
+        CityWeather testWeather = parseJSONTester("GOOD_DATA");
 
-        refHashMap.put("description", "broken clouds");
-        refHashMap.put("pressure", "983.0");
-        refHashMap.put("temperature", "0.0");
-
-        assertEquals(refHashMap, testHashMap);
+        assertEquals(refWeather, testWeather);
     }
 
     //parseJSON - Give it nonsense data, and verify
     @Test
     void parseJSON_BadData(){
-        assertThrows(org.json.JSONException.class, ()->{HashMap<String, String> testHashMap = parseJSONTester("BAD_DATA");});
+        assertThrows(org.json.JSONException.class, ()->{CityWeather testWeather = parseJSONTester("BAD_DATA");});
     }
     //parseJSON - Give it no data, and verify
     @Test
     void parseJSON_NoData(){
-        assertThrows(org.json.JSONException.class, ()->{HashMap<String, String> testHashMap = parseJSONTester("BAD_DATA");});
+        assertThrows(org.json.JSONException.class, ()->{CityWeather testWeather = parseJSONTester("BAD_DATA");});
     }
 
     //getWeatherAtCity - Give it a valid city
     @Test
     void getWeatherAtCity_GoodData() throws IOException, InterruptedException {
         Network testNetwork = mock(Network.class);
-
-        HashMap<String, String> refHashMap = new HashMap<>();
-        refHashMap.put("description", "broken clouds");
-        refHashMap.put("pressure", "983.0");
-        refHashMap.put("temperature", "0.0");
 
         when(testNetwork.httpRequest("http://api.openweathermap.org/data/2.5/weather?q="
                 + testData.get("CITY")
@@ -85,8 +113,8 @@ class OpenWeatherAPITest {
         OpenWeatherAPI testAPI = new OpenWeatherAPI(testNetwork);
         testAPI.setAPI_KEY(API_KEY);
 
-        HashMap<String, String> testHash = testAPI.getWeatherAtCity(testData.get("CITY"));
-        assertEquals(refHashMap, testHash);
+        CityWeather testWeather = testAPI.getWeatherAtCity(testData.get("CITY"));
+        assertEquals(refWeather, testWeather);
     }
 
     //getWeatherAtCity - Give it an invalid city
