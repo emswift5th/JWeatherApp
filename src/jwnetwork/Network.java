@@ -25,11 +25,11 @@ public class Network {
         this(HttpClient.newHttpClient());
     }
 
-    public Pair<String, Integer> httpRequest (String URL) throws IOException, InterruptedException, UncheckedIOException {
+    public String httpRequest (String URL) throws IOException, InterruptedException, UncheckedIOException {
         //Do better error handling here
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(URL)).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return new Pair<>(response.body(), response.statusCode());
+        return response.body();
     }
 }

@@ -1,8 +1,6 @@
+import APIs.openweathermap.OpenWeatherMapAPI;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import consoledisplay.ConsoleInterface;
-import parsejsonapi.OpenWeatherAPI;
-
-import java.util.HashMap;
 
 import types.*;
 
@@ -13,7 +11,6 @@ public class Main {
     public static void main(String[] args) {
         //Should not be in source code.
         //It's a free API so we can get away with it for now, but this really needs to be addressed.
-        String API_KEY = System.getenv("OPEN_WEATHER_API_KEY");
 
         ConsoleInterface console = new ConsoleInterface();
         String city;
@@ -27,14 +24,17 @@ public class Main {
         }
         System.out.println(city + " it is! One sec...");
 
-        //Create a new Open Weather Map API interface
-        OpenWeatherAPI owAPI = new OpenWeatherAPI();
+        //Create a new Open Weather Map API
+        //initialise with the API key grabbed from environment variables
+        OpenWeatherMapAPI owAPI = new OpenWeatherMapAPI(System.getenv("OPEN_WEATHER_API_KEY"));
 
-        //Set up API key and get the weather data hashmap
-        owAPI.setAPI_KEY(API_KEY);
-        CityWeather WeatherData = null;
+        Cities cities = new Cities();
+        cities.addCity(city);
+
+        City curCity = cities.list().get(city);
+
         try {
-            WeatherData = owAPI.getWeatherAtCity(city);
+            curCity.getReading(owAPI);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -42,10 +42,8 @@ public class Main {
         //GUI stuff... for the future
         //POSTMAN, a way of calling APIs????
 
-
         //Print the weather at the specified location
-
-        //console.printOutWeatherHashMap(WeatherData);
+        console.printRecord(curCity.getReading(0));
 
     }
 }

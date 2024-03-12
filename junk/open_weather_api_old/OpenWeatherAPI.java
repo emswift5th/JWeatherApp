@@ -1,15 +1,13 @@
-package parsejsonapi;
+package APIs.open_weather_api_old;
 
 //import org.json.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import types.CityWeather;
-import types.Geo;
-import types.Weather;
-import unitconversions.Convert;
+import types.Geo_class;
+import types.Weather_class;
 import jwnetwork.Network;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class OpenWeatherAPI {
 
@@ -34,37 +32,39 @@ public class OpenWeatherAPI {
 
     public CityWeather parseJSON(String JSONinput) throws JsonProcessingException {
         //Parsing JSON
-        OW_API_JSON_Record APIData;
+        OW_API_JSON_Container APIData;
         //Creating and filling out a local weather record to store data from the API
         //Standardises weather data between APIs
         types.CityWeather cityWeather;
-        types.Geo geo;
-        types.Weather weather;
+        Geo_class geo;
+        Weather_class weather;
         ObjectMapper objectMapper = new ObjectMapper();
 
-        APIData = objectMapper.readValue(JSONinput, OW_API_JSON_Record.class);
-        geo = new Geo(
-                APIData.name(),
-                APIData.sys().country(),
-                APIData.coord().lon(),
-                APIData.coord().lat(),
-                APIData.timezone(),
-                APIData.sys().sunrise(),
-                APIData.sys().sunset()
+        APIData = objectMapper.readValue(JSONinput, OW_API_JSON_Container.class);
+
+        geo = new Geo_class(
+                APIData.getName(),
+                APIData.getSys().getCountry(),
+                //APIData.getCoord().getLon(),
+                APIData.getCoord() != null ? APIData.getCoord().getLon() : 0.0f,
+                APIData.getCoord() != null ? APIData.getCoord().getLat() : 0.0f,
+                APIData.getTimezone(),
+                APIData.getSys().getSunrise(),
+                APIData.getSys().getSunset()
         );
-        weather = new Weather(
-                APIData.weather()[0].description(),
-                APIData.main().temp(),
-                APIData.main().feels_like(),
-                APIData.main().pressure(),
-                APIData.main().humidity(),
-                APIData.visibility(),
-                APIData.wind().speed(),
-                APIData.wind().gust(),
-                APIData.wind().speed(),
-                APIData.clouds().all(),
-                APIData.rain().one_hour_mm(),
-                APIData.snow().one_hour_mm()
+        weather = new Weather_class(
+                APIData.getWeather()[0].getDescription(),
+                APIData.getMain().getTemp(),
+                APIData.getMain().getFeels_like(),
+                APIData.getMain().getPressure(),
+                APIData.getMain().getHumidity(),
+                APIData.getVisibility(),
+                APIData.getWind().getSpeed(),
+                APIData.getWind().getGust(),
+                APIData.getWind().getSpeed(),
+                APIData.getClouds().getAll(),
+                APIData.getRain().getOne_hour_mm(),
+                APIData.getSnow().getOne_hour_mm()
         );
         cityWeather = new CityWeather(geo, weather);
         //Jackson, via DTO?
