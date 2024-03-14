@@ -1,6 +1,6 @@
 package consoledisplay;
 
-import types.CityWeather;
+import citydata.types.CityWeather;
 
 import java.lang.reflect.Field;
 import java.util.Scanner;

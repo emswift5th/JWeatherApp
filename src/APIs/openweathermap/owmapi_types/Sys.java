@@ -5,7 +5,7 @@ public record Sys(
         String id,
         String message,
         String country,
-        double sunrise,
-        double sunset
+        long sunrise,
+        long sunset
 ) {
 }

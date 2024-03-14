@@ -8,6 +8,6 @@ public record Main(
         float pressure,
         int humidity,
         long sea_level,
-        long ground_level
+        long grnd_level
 ) {
 }

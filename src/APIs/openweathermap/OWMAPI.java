@@ -1,47 +1,57 @@
 package APIs.openweathermap;
 
 import APIs.API;
+import citydata.types.City;
+import citydata.types.CityWeather;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jwnetwork.Network;
-import types.CityWeather;
-
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 
 import java.io.IOException;
 
-public class OpenWeatherMapAPI extends API {
+public class OWMAPI extends API {
+    Network network;
 
-    public OpenWeatherMapAPI(String key){
+    public OWMAPI(String key){
         setAPIKey(key);
     }
-    @Override
-    public CityWeather getCityWeather(String city) throws JsonProcessingException {
-        String weatherJSON;
-        Network network = new Network();
 
-        //grab JSON data from the web
+    public CityWeather getCityWeather (City city){
+        if (network == null) {
+            network = new Network();
+        }
+        if (API_KEY == null) {
+            throw new RuntimeException("No API Key given, environment variable not set up?");
+        }
+        String weatherJSON = requestJSONDataForCity(city);
+        OWMAPIData apiWeather = mapToObject(weatherJSON);
+        return convertWeather(apiWeather);
+    }
+
+    private OWMAPIData mapToObject(String weatherJSON) {
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            weatherJSON = network.httpRequest("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + getAPIKey());
-        } catch (IOException | InterruptedException e) {
+            return objectMapper.readValue(weatherJSON, OWMAPIData.class);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        //Parse it into a local POJO representation, unique to OpenWeatherMap API
-        OWMAPIData APIData;
-        ObjectMapper objectMapper = new ObjectMapper();
+    }
 
+    private String requestJSONDataForCity(City city){
+        String weatherJSON;
+        try{
+            weatherJSON = network.httpRequest("http://api.openweathermap.org/data/2.5/weather?q=" + city.getCityName() + "&appid=" + getAPIKey());
+        } catch (IOException | InterruptedException e){
+            throw new RuntimeException(e);
+        }
+        return weatherJSON;
+    }
 
-        APIData = objectMapper.readValue(weatherJSON, OWMAPIData.class);
+    private CityWeather convertWeather (OWMAPIData APIData){
 
+        CityWeather internalWeather;
 
-        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalDateTime curDateTime = LocalDateTime.now();
-
-        //create a CityWeather object to return
-        CityWeather cityWeather;
-        cityWeather = new CityWeather(
+        internalWeather = new CityWeather(
                 APIData.name(),
                 APIData.sys() != null ? APIData.sys().country() : "",
                 APIData.coord() != null ? APIData.coord().lon() : 0,
@@ -62,10 +72,10 @@ public class OpenWeatherMapAPI extends API {
                 APIData.rain() != null ? APIData.rain().one_hour_mm() : 0,
                 APIData.snow() != null ? APIData.snow().one_hour_mm() : 0,
                 "Open Weather Map",
-                formatDate.format(curDateTime),
-                formatTime.format(curDateTime)
+                System.currentTimeMillis()/1000,
+                APIData.dt()
         );
 
-        return cityWeather;
+        return internalWeather;
     }
 }

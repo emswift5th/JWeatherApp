@@ -1,4 +1,12 @@
 package APIs.openweathermap.owmapi_types;
 
-public record Snow(int one_hour_mm, int two_hour_mm) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record Snow(
+        @JsonProperty("1h")
+        int one_hour_mm,
+        @JsonProperty("2h")
+        int two_hour_mm
+)
+{
 }
