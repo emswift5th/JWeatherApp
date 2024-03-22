@@ -1,5 +1,5 @@
 import static consolemode.InteractiveMode.runInteractiveMode;
-import static consolemode.UninteractiveMode.runUninteractiveMode;
+import static consolemode.uninteractiveMode.UninteractiveMode.runUninteractiveMode;
 
 public class Main {
 
