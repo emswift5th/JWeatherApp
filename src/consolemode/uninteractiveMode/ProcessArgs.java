@@ -127,12 +127,17 @@ public class ProcessArgs {
     }
 
     private static City argLatLonsToCitiesList(ArrayList<LatLon> latLons) {
+        return null;
     }
 
     private static City argCitiesWithStateCountryToCitiesList(ArrayList<CityStateCountry> citiesStateCountry) {
+        return null;
+
     }
 
     private static City argCitiesWithCountryToCitiesList(ArrayList<CityWithCountry> citiesWithCountry) {
+        return null;
+
     }
 
     private static ArrayList<City> argCitiesToCitiesList(ArrayList<String> argCities) {

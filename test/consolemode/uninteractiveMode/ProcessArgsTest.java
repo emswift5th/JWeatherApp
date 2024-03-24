@@ -1,20 +1,21 @@
-package consolemode;
+package consolemode.uninteractiveMode;
 
+import consolemode.ConsoleIO;
 import consolemode.uninteractiveMode.argumentRecords.Arguments;
 import consolemode.uninteractiveMode.argumentRecords.CityStateCountry;
 import consolemode.uninteractiveMode.argumentRecords.CityWithCountry;
 import config.LatLon;
-import consolemode.uninteractiveMode.ProcessArgs;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static consolemode.uninteractiveMode.ProcessArgs.parseArgs;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ConsoleIOTest {
+class ProcessArgsTest {
 
     @Test
     void parsedConsolePromptCities() {
@@ -80,13 +81,8 @@ class ConsoleIOTest {
     @Test
     void parseLatLon(){
         String[] s = {"-ll", "1.12345", "2.23456", "9.87654", "8.76543"};
-        ArrayList<LatLon> refLatLons = new ArrayList<>();
-        LatLon rec = new LatLon(1.12345f, 2.23456f);
-        LatLon rec2 = new LatLon(9.87654f, 8.76543f);
-        refLatLons.add(rec);
-        refLatLons.add(rec2);
+        List<LatLon>  refLatLons = List.of(new LatLon(1.12345f, 2.23456f), new LatLon(9.87654f, 8.76543f));
         parseArgs(s);
-
         assertEquals(refLatLons, Arguments.latLons);
     }
 

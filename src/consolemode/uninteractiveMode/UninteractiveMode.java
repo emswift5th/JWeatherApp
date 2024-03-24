@@ -15,12 +15,12 @@ public class UninteractiveMode {
         parseArgs(args);
         //go through Arguments and get LatLon data for each city, so as
         //to be unambiguous
-        argsToCities(args);
+        //argsToCities(args);
 
         //lookup weather and update local records
         //print records
 
-        WeatherGetter.addWeatherRecordsToList(cities);
-        console.dumpAllRecords(cities);
+        //WeatherGetter.addWeatherRecordsToList(cities);
+        //console.dumpAllRecords(cities);
     }
 }
